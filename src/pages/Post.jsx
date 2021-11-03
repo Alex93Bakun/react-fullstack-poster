@@ -34,7 +34,7 @@ const Post = () => {
                 },
                 {
                     headers: {
-                        accessToken: sessionStorage.getItem('accessToken'),
+                        accessToken: localStorage.getItem('accessToken'),
                     },
                 }
             )
@@ -43,7 +43,10 @@ const Post = () => {
                     alert('You must authorized to post comment');
                     setNewComment('');
                 } else {
-                    const commentToAdd = { commentBody: newComment };
+                    const commentToAdd = {
+                        commentBody: newComment,
+                        username: response.data.username,
+                    };
                     setComments([...comments, commentToAdd]);
                     setNewComment('');
                 }
@@ -75,6 +78,7 @@ const Post = () => {
                         return (
                             <div key={comment.id} className="comment">
                                 {comment.commentBody}
+                                <label>{comment.username}</label>
                             </div>
                         );
                     })}
