@@ -1,27 +1,26 @@
-import React from 'react';
-import { ErrorMessage, Field, Form, Formik } from 'formik';
-import * as Yup from 'yup';
-import axios from 'axios';
-import { useHistory } from 'react-router-dom';
+import React from "react";
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import * as Yup from "yup";
+import axios from "axios";
+import { useHistory } from "react-router-dom";
 
-const CreatePost = () => {
-    const history = useHistory();
-
+function CreatePost() {
+    let history = useHistory();
     const initialValues = {
-        title: '',
-        postText: '',
-        username: '',
+        title: "",
+        postText: "",
+        username: "",
     };
 
     const validationSchema = Yup.object().shape({
-        title: Yup.string().required('You must input a Title!'),
+        title: Yup.string().required("You must input a Title!"),
         postText: Yup.string().required(),
         username: Yup.string().min(3).max(15).required(),
     });
 
     const onSubmit = (data) => {
-        axios.post('http://localhost:3001/posts', data).then((response) => {
-            history.push('/');
+        axios.post("http://localhost:3001/posts", data).then((response) => {
+            history.push("/");
         });
     };
 
@@ -63,6 +62,6 @@ const CreatePost = () => {
             </Formik>
         </div>
     );
-};
+}
 
 export default CreatePost;

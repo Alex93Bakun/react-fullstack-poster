@@ -1,18 +1,15 @@
-import {BrowserRouter as Router, Link, Route, Switch} from 'react-router-dom';
-import {useEffect, useState} from 'react';
-
-import {AuthContext} from './helpers/authContext';
-
+import './App.css';
+import { BrowserRouter as Router, Link, Route, Switch } from 'react-router-dom';
 import Home from './pages/Home';
 import CreatePost from './pages/CreatePost';
 import Post from './pages/Post';
-import Login from './pages/Login';
 import Registration from './pages/Registration';
-
-import './App.css';
+import Login from './pages/Login';
+import { AuthContext } from './helpers/AuthContext';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
 
-const App = () => {
+function App() {
     const [authState, setAuthState] = useState({
         username: '',
         id: 0,
@@ -28,7 +25,7 @@ const App = () => {
             })
             .then((response) => {
                 if (response.data.error) {
-                    setAuthState({...authState, status: false});
+                    setAuthState({ ...authState, status: false });
                 } else {
                     setAuthState({
                         username: response.data.username,
@@ -41,46 +38,53 @@ const App = () => {
 
     const logout = () => {
         localStorage.removeItem('accessToken');
-        setAuthState({username: '', id: 0, status: false});
+        setAuthState({ username: '', id: 0, status: false });
     };
 
     return (
         <div className="App">
-            <AuthContext.Provider value={{authState, setAuthState}}>
+            <AuthContext.Provider value={{ authState, setAuthState }}>
                 <Router>
                     <div className="navbar">
-                        <Link to="/">Home</Link>
-                        <Link to="/create-post">Create A Post</Link>
-                        {!authState.status ? (
-                            <>
-                                <Link to="/login">Login</Link>
-                                <Link to="/registration">Registration</Link>
-                            </>
-                        ) : (
-                            <button onClick={logout}>Logout</button>
-                        )}
-
-                        <h1>{authState.username}</h1>
+                        <div className="links">
+                            <Link to="/"> Home Page</Link>
+                            <Link to="/createpost"> Create A Post</Link>
+                            {!authState.status && (
+                                <>
+                                    <Link to="/login"> Login</Link>
+                                    <Link to="/registration">
+                                        {' '}
+                                        Registration
+                                    </Link>
+                                </>
+                            )}
+                        </div>
+                        <div className="loggedInContainer">
+                            <h1>{authState.username} </h1>
+                            {authState.status && (
+                                <button onClick={logout}> Logout</button>
+                            )}
+                        </div>
                     </div>
                     <Switch>
-                        <Route exact path="/" component={Home}/>
+                        <Route path="/" exact component={Home} />
                         <Route
-                            exact
                             path="/create-post"
+                            exact
                             component={CreatePost}
                         />
-                        <Route exact path="/post/:id" component={Post}/>
-                        <Route exact path="/login" component={Login}/>
+                        <Route path="/post/:id" exact component={Post} />
                         <Route
-                            exact
                             path="/registration"
+                            exact
                             component={Registration}
                         />
+                        <Route path="/login" exact component={Login} />
                     </Switch>
                 </Router>
             </AuthContext.Provider>
         </div>
     );
-};
+}
 
 export default App;

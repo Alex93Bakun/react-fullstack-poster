@@ -1,10 +1,9 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
+import { AuthContext } from '../helpers/AuthContext';
 
-import { AuthContext } from '../helpers/authContext';
-
-const Post = () => {
+function Post() {
     let { id } = useParams();
     const [postObject, setPostObject] = useState({});
     const [comments, setComments] = useState([]);
@@ -12,25 +11,19 @@ const Post = () => {
     const { authState } = useContext(AuthContext);
 
     useEffect(() => {
-        const fetchData = async () => {
-            await axios
-                .get(`http://localhost:3001/posts/byId/${id}`)
-                .then((response) => {
-                    setPostObject(response.data);
-                });
-            await axios
-                .get(`http://localhost:3001/comments/${id}`)
-                .then((response) => {
-                    setComments(response.data);
-                });
-        };
-        fetchData();
+        axios.get(`http://localhost:3001/posts/byId/${id}`).then((response) => {
+            setPostObject(response.data);
+        });
+
+        axios.get(`http://localhost:3001/comments/${id}`).then((response) => {
+            setComments(response.data);
+        });
     }, []);
 
     const addComment = () => {
         axios
             .post(
-                `http://localhost:3001/comments`,
+                'http://localhost:3001/comments',
                 {
                     commentBody: newComment,
                     PostId: id,
@@ -43,8 +36,7 @@ const Post = () => {
             )
             .then((response) => {
                 if (response.data.error) {
-                    alert('You must authorized to post comment');
-                    setNewComment('');
+                    console.log(response.data.error);
                 } else {
                     const commentToAdd = {
                         commentBody: newComment,
@@ -56,12 +48,10 @@ const Post = () => {
             });
     };
 
-    const deleteComment = async (id) => {
-        await axios
+    const deleteComment = (id) => {
+        axios
             .delete(`http://localhost:3001/comments/${id}`, {
-                headers: {
-                    accessToken: localStorage.getItem('accessToken'),
-                },
+                headers: { accessToken: localStorage.getItem('accessToken') },
             })
             .then(() => {
                 setComments(
@@ -88,23 +78,25 @@ const Post = () => {
                         placeholder="Comment..."
                         autoComplete="off"
                         value={newComment}
-                        onChange={(e) => setNewComment(e.target.value)}
+                        onChange={(event) => {
+                            setNewComment(event.target.value);
+                        }}
                     />
-                    <button onClick={addComment}>Add Comment</button>
+                    <button onClick={addComment}> Add Comment</button>
                 </div>
                 <div className="listOfComments">
-                    {comments.map((comment) => {
+                    {comments.map((comment, key) => {
                         return (
-                            <div key={comment.id} className="comment">
+                            <div key={key} className="comment">
                                 {comment.commentBody}
-                                <label>{comment.username}</label>
+                                <label> Username: {comment.username}</label>
                                 {authState.username === comment.username && (
                                     <button
-                                        onClick={() =>
-                                            deleteComment(comment.id)
-                                        }
+                                        onClick={() => {
+                                            deleteComment(comment.id);
+                                        }}
                                     >
-                                        x
+                                        X
                                     </button>
                                 )}
                             </div>
@@ -114,6 +106,6 @@ const Post = () => {
             </div>
         </div>
     );
-};
+}
 
 export default Post;

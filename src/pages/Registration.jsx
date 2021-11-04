@@ -1,12 +1,12 @@
-import React from 'react';
-import { ErrorMessage, Field, Form, Formik } from 'formik';
-import * as Yup from 'yup';
-import axios from 'axios';
+import React from "react";
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import * as Yup from "yup";
+import axios from "axios";
 
 function Registration() {
     const initialValues = {
-        username: '',
-        password: '',
+        username: "",
+        password: "",
     };
 
     const validationSchema = Yup.object().shape({
@@ -15,7 +15,7 @@ function Registration() {
     });
 
     const onSubmit = (data) => {
-        axios.post('http://localhost:3001/auth', data).then(() => {
+        axios.post("http://localhost:3001/auth", data).then(() => {
             console.log(data);
         });
     };
@@ -31,7 +31,7 @@ function Registration() {
                     <label>Username: </label>
                     <ErrorMessage name="username" component="span" />
                     <Field
-                        autoComplete="off"
+                        autocomplete="off"
                         id="inputCreatePost"
                         name="username"
                         placeholder="(Ex. John123...)"
@@ -40,7 +40,7 @@ function Registration() {
                     <label>Password: </label>
                     <ErrorMessage name="password" component="span" />
                     <Field
-                        autoComplete="off"
+                        autocomplete="off"
                         type="password"
                         id="inputCreatePost"
                         name="password"

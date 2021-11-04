@@ -4,7 +4,7 @@ import { useHistory } from 'react-router-dom';
 
 const Home = () => {
     const [listOfPosts, setListOfPosts] = useState([]);
-    const history = useHistory();
+    let history = useHistory();
 
     useEffect(() => {
         axios.get('http://localhost:3001/posts').then((response) => {
@@ -12,18 +12,61 @@ const Home = () => {
         });
     }, []);
 
+    const likeAPost = (postId) => {
+        axios
+            .post(
+                'http://localhost:3001/likes',
+                { PostId: postId },
+                {
+                    headers: {
+                        accessToken: localStorage.getItem('accessToken'),
+                    },
+                }
+            )
+            .then((response) => {
+                setListOfPosts(
+                    listOfPosts.map((post) => {
+                        if (post.id === postId) {
+                            if (response.data.liked) {
+                                return { ...post, Likes: [...post.Likes, 0] };
+                            } else {
+                                const likesArray = post.Likes;
+                                likesArray.pop();
+                                return { ...post, Likes: likesArray };
+                            }
+                        } else {
+                            return post;
+                        }
+                    })
+                );
+            });
+    };
+
     return (
         <div>
-            {listOfPosts.map((item) => {
+            {listOfPosts.map((value, key) => {
                 return (
-                    <div
-                        className="post"
-                        key={item.id}
-                        onClick={() => history.push(`/post/${item.id}`)}
-                    >
-                        <div className="title">{item.title}</div>
-                        <div className="body">{item.postText}</div>
-                        <div className="footer">{item.username}</div>
+                    <div key={key} className="post">
+                        <div className="title"> {value.title} </div>
+                        <div
+                            className="body"
+                            onClick={() => {
+                                history.push(`/post/${value.id}`);
+                            }}
+                        >
+                            {value.postText}
+                        </div>
+                        <div className="footer">
+                            {value.username}{' '}
+                            <button
+                                onClick={() => {
+                                    likeAPost(value.id);
+                                }}
+                            >
+                                Like
+                            </button>
+                            <label> {value.Likes.length}</label>
+                        </div>
                     </div>
                 );
             })}
