@@ -8,6 +8,7 @@ import Login from './pages/Login';
 import { AuthContext } from './helpers/AuthContext';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import PageNotFound from "./pages/PageNotFound";
 
 function App() {
     const [authState, setAuthState] = useState({
@@ -48,7 +49,7 @@ function App() {
                     <div className="navbar">
                         <div className="links">
                             <Link to="/"> Home Page</Link>
-                            <Link to="/createpost"> Create A Post</Link>
+                            <Link to="/create-post"> Create A Post</Link>
                             {!authState.status && (
                                 <>
                                     <Link to="/login"> Login</Link>
@@ -80,6 +81,7 @@ function App() {
                             component={Registration}
                         />
                         <Route path="/login" exact component={Login} />
+                        <Route path="*" exact component={PageNotFound} />
                     </Switch>
                 </Router>
             </AuthContext.Provider>
