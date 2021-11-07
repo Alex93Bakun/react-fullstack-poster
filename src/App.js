@@ -10,6 +10,7 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import PageNotFound from './pages/PageNotFound';
 import Profile from './pages/Profile';
+import ChangePassword from './pages/CangePassword';
 
 function App() {
     const [authState, setAuthState] = useState({
@@ -62,7 +63,11 @@ function App() {
                             )}
                         </div>
                         <div className="loggedInContainer">
-                            <h1>{authState.username} </h1>
+                            <h1>
+                                <Link to={`/profile/${authState.id}`}>
+                                    {authState.username}
+                                </Link>
+                            </h1>
                             {authState.status && (
                                 <button onClick={logout}> Logout</button>
                             )}
@@ -83,6 +88,11 @@ function App() {
                         />
                         <Route path="/login" exact component={Login} />
                         <Route path="/profile/:id" exact component={Profile} />
+                        <Route
+                            path="/changepassword"
+                            exact
+                            component={ChangePassword}
+                        />
 
                         <Route path="*" exact component={PageNotFound} />
                     </Switch>

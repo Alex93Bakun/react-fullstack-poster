@@ -1,12 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import axios from 'axios';
+import { AuthContext } from '../helpers/AuthContext';
 
 const Profile = () => {
     let { id } = useParams();
     let history = useHistory();
     const [username, setUsername] = useState('');
     const [listOfPosts, setListOfPosts] = useState([]);
+    const { authState } = useContext(AuthContext);
 
     useEffect(() => {
         axios
@@ -26,6 +28,15 @@ const Profile = () => {
         <div className="profilePageContainer">
             <div className="basicInfo">
                 <h1> Username: {username} </h1>
+                {authState.username === username && (
+                    <button
+                        onClick={() => {
+                            history.push('/changepassword');
+                        }}
+                    >
+                        Change my password
+                    </button>
+                )}
             </div>
             <div className="listOfPosts">
                 {listOfPosts.map((value, key) => {
